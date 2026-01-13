@@ -41,3 +41,28 @@ export interface User {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+
+export interface Country {
+    id: number;
+    name: string;
+    code: string;
+    [key: string]: unknown; // This allows for additional properties...
+}
+
+export interface Currency {
+    id: number;
+    name: string;
+    code: string;
+    symbol: string;
+    [key: string]: unknown; // This allows for additional properties...
+}
+
+export interface Business {
+    id: number;
+    name: string;
+    code: string;
+    currency_id: number;
+    country_id: number;
+    [key: string]: unknown; // This allows for additional properties...
+}
