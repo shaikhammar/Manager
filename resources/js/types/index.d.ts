@@ -42,7 +42,6 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
-
 export interface Country {
     id: number;
     name: string;
