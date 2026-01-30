@@ -10,8 +10,7 @@ export default function InputError({
         <p
             {...props}
             className={cn('text-sm text-red-600 dark:text-red-400', className)}
-        >
-            {message}
-        </p>
+            dangerouslySetInnerHTML={{ __html: message }}
+        />
     ) : null;
 }

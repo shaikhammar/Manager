@@ -24,7 +24,7 @@ class BusinessCreateRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:255',
+            'code' => 'string|max:255',
             'country_id' => 'required|exists:countries,id',
             'currency_id' => 'required|exists:currencies,id',
         ];

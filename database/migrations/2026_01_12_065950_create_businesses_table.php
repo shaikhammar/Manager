@@ -22,6 +22,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('country_id')->constrained('countries');
             $table->foreignId('currency_id')->constrained('currencies');
+            $table->boolean('is_default')->default(false);
         });
     }
 

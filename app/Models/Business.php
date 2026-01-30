@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Service\AccountSeederService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Auth;
 use Str;
 
 class Business extends Model
@@ -14,6 +17,11 @@ class Business extends Model
         'user_id',
         'country_id',
         'currency_id',
+        'is_default',
+    ];
+
+    protected $casts = [
+        'is_default' => 'boolean',
     ];
 
     public function user(): BelongsTo
@@ -29,6 +37,11 @@ class Business extends Model
     public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class);
+    }
+
+    public function accounts(): HasMany
+    {
+        return $this->hasMany(Account::class);
     }
 
     public static function generateUniqueCode(string $name, ?string $desiredCode = null): string
@@ -92,6 +105,14 @@ class Business extends Model
             if (empty($business->code)) {
                 $business->code = static::generateUniqueCode($business->name);
             }
+
+            $userHasBusiness = static::where('user_id', $business->user_id)->exists();
+                $business->is_default = !$userHasBusiness;
+
+        });
+
+        static::created(function (self $business) {
+            app(AccountSeederService::class)->seedStandardAccounts($business);
         });
     }
 }

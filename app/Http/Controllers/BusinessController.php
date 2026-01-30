@@ -18,7 +18,7 @@ class BusinessController extends Controller
     public function index()
     {
         $businesses = Auth::user()->businesses()
-        ->select('id', 'name','code','currency_id','country_id')
+        ->select(['id', 'name','code','currency_id','country_id','is_default'])
         ->get();
 
         if($businesses->isEmpty()) {
@@ -35,8 +35,8 @@ class BusinessController extends Controller
      */
     public function create()
     {
-        $countries = Country::select('id', 'name','code')->get();
-        $currencies = Currency::select('id', 'name','code','symbol')->get();
+        $countries = Country::select(['id', 'name','code'])->get();
+        $currencies = Currency::select(['id', 'name','code','symbol'])->get();
         return Inertia::render('business/create', [
             'countries' => $countries,
             'currencies' => $currencies,
@@ -48,44 +48,45 @@ class BusinessController extends Controller
      */
     public function store(BusinessCreateRequest $request)
     {
-        $business = Auth::user()->businesses()->create($request->all());
-
-        return redirect()->route('business.index')->with('success', 'Business {business->name} created successfully');
+        $business = Auth::user()->businesses()->create($request->validated());
+        session(['active_business_id' => $business->id]);
+       
+        return redirect()->route('business.index')->with('success', "Business {$business->name} created successfully");
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Business $business)
-    {
-        return Inertia::render('business/show', [
-            'business' => $business,
-        ]);
-    }
+    // public function show(Business $business)
+    // {
+    //     return Inertia::render('business/show', [
+    //         'business' => $business,
+    //     ]);
+    // }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Business $business)
-    {
-        return Inertia::render('business/edit', [
-            'business' => $business,
-        ]);
-    }
+    // public function edit(Business $business)
+    // {
+    //     return Inertia::render('business/edit', [
+    //         'business' => $business,
+    //     ]);
+    // }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Business $business)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:255',
             'country_id' => 'required|exists:countries,id',
             'currency_id' => 'required|exists:currencies,id',
         ]);
 
-        $business->update($request->all());
+        $business->update($validated);
 
         return redirect()->route('business.index')->with('success', 'Business updated successfully');
     }
@@ -95,7 +96,7 @@ class BusinessController extends Controller
      */
     public function destroy(Business $business)
     {
-        $business->delete();
+        $business->delete($business->id);
 
         return redirect()->route('business.index')->with('success', 'Business deleted successfully');
     }
@@ -108,8 +109,8 @@ class BusinessController extends Controller
         if(!$business){
             return redirect()->route('business.index')->with('error', 'Select a valid business');
         }
-        $request->session()->put('business_id', $business->id);
+        session(['active_business_id' => $business->id]);
 
-        return redirect()->route('dashboard')->with('success', 'Business switched successfully');
+        return redirect()->route('dashboard')->with('success', "{$business->name} is now active");
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Models\Business;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -11,17 +12,20 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
-        $business_id = session('business_id');
+        $business_id = session('active_business_id');
         if (!$business_id) {
             return redirect()->route('business.index');
         }
-        $business = Business::find($business_id);
+        $business = Business::findOrFail($business_id);
         return Inertia::render('dashboard', [
             'business' => $business,
         ]);
     })->name('dashboard');
     Route::resource('business', BusinessController::class);
-    Route::post('business/switch/{business}', [BusinessController::class, 'switch'])->name('business.switch');
+    Route::post('business/{business}/switch', [BusinessController::class, 'switch'])->name('business.switch');
+
+    // Account
+    Route::resource('account', AccountController::class);
 });
 
 require __DIR__.'/settings.php';

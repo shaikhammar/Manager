@@ -14,7 +14,6 @@ import AppLayout from '@/layouts/app-layout';
 import { index } from '@/routes/business';
 import { BreadcrumbItem, Country, Currency } from '@/types';
 import { Form, Head, router, usePage } from '@inertiajs/react';
-import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -43,9 +42,6 @@ export default function BusinessCreate() {
                         }}
                         resetOnSuccess
                         disableWhileProcessing
-                        onSuccess={() => {
-                            toast.success('Business created successfully');
-                        }}
                     >
                         {({ errors, processing }) => (
                             <>

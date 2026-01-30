@@ -23,6 +23,15 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        User::firstOrCreate(
+            ['email' => 'mluffy@onepiece.com'],
+            [
+                'name' => 'Monkey D Luffy',
+                'password' => 'password',
+                'email_verified_at' => now(),
+            ]
+        );
+
         $this->call([
             CountrySeeder::class,
             CurrencySeeder::class,

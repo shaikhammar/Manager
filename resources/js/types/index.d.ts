@@ -27,7 +27,15 @@ export interface SharedData {
     quote: { message: string; author: string };
     auth: Auth;
     sidebarOpen: boolean;
+    flash: FlashMessage;
     [key: string]: unknown;
+}
+
+export interface FlashMessage {
+    success?: string;
+    error?: string;
+    warning?: string;
+    info?: string;
 }
 
 export interface User {
@@ -65,3 +73,17 @@ export interface Business {
     country_id: number;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export interface Account {
+    business_id: number;
+    id: number;
+    code: string;
+    name: string;
+    type: string;
+    parent_id: number | null;
+    is_selectable: boolean;
+    is_system: boolean;
+    children: Account[];
+    [key: string]: unknown; // This allows for additional properties...
+}
+    

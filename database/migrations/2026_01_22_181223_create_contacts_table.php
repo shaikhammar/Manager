@@ -11,15 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('currencies', function (Blueprint $table) {
+        Schema::create('contacts', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
 
-            $table->string('code', 3)->unique();
             $table->string('name');
-            $table->string('symbol', 10);
-            $table->integer('minor_units')->default(2);
-            $table->boolean('is_active')->default(true);
+            $table->string('email')->nullable();
+            $table->enum('type', ['Customer', 'Vendor', 'Bank', 'Other']);
+            
+            $table->foreignId('default_currency_id')->constrained('currencies');
+            $table->foreignId('business_id')->constrained();
         });
     }
 
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('currencies');
+        Schema::dropIfExists('contacts');
     }
 };
